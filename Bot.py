@@ -19,6 +19,7 @@ async def on_ready():
 	print("Bot en ligne et prêt!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
+	await client.change_presence(game=discord.Game(name="in v: 1.0.0"))
 	print("")
 
 @client.command(pass_context=True)
