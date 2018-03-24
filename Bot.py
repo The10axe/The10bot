@@ -19,7 +19,7 @@ bot_prefix= "§"
 client = commands.Bot(command_prefix=bot_prefix)
 @client.event
 async def on_ready():
-	print("Bot en ligne et prêt!")
+	print("Bot online and ready!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
 	await client.change_presence(game=discord.Game(name="in v: 2.0.0"))
@@ -27,7 +27,6 @@ async def on_ready():
 
 @client.command(pass_context=True)
 async def ping(ctx):
-	#await client.say("I saw chu! Chu forgot to say \"Pong\"!")
 	embed = discord.Embed(title="I saw chu!", description="Chu forgot to say \"Pong!\"", color=0x00ff00)
 	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 	print("Commande \"Ping\" effectué")
