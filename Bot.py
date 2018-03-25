@@ -6,6 +6,8 @@ import logging
 import asyncio
 import datetime
 
+gamemode = ["play", "stream", "listen", "watch"]
+
 date=datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm %Ss")
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -29,7 +31,7 @@ async def on_ready():
 	print("Bot en ligne et prêt!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
-	await client.change_presence(game=discord.Game(name="in v: 2.0.1"))
+	await client.change_presence(game=discord.Game(name="in v: 2.1.1"))
 	print("")
 
 @client.command(pass_context=True)
@@ -41,24 +43,26 @@ async def ping(ctx):
 	print("")
 
 @client.command(pass_context=True)
-async def game(ctx, *, Message : str):
-	if Message == None:
-		return
+async def game(ctx,game : str, *, Message : str):
+	if ctx.message.author.id == "178566165206007808":
+			for value in range(0,4):
+				if str.casefold(game) == gamemode[value]:
+					if value == 1:
+						await client.change_presence(game=discord.Game(name=Message,type=value,url="https://twitch.tv/the10axe"))
+					else:
+						await client.change_presence(game=discord.Game(name=Message,type=value))
+					embed = discord.Embed(title="Game change successfully", description="New "+gamemode[value]+": "+Message, color=0x00ff00)
+					embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
+					await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+					print("Game setted to: ", Message)
+					print("")
+					return
 	else:
-		if ctx.message.author.id == "178566165206007808":
-			await client.change_presence(game=discord.Game(name=Message))
-			embed = discord.Embed(title="Game change successfully", description="New game: "+Message, color=0x00ff00)
-			embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
-			await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
-			print("Game setted to: ", Message)
-			print("")
-			return
-		else:
-			print(ctx.message.author.id, "tried to set game")
-			embed = discord.Embed(title="An error occured", description="You have no right to do that!", color=0xff0000)
-			embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
-			await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
-			return
+		print(ctx.message.author.id, "tried to set game")
+		embed = discord.Embed(title="An error occured", description="You have no right to do that!", color=0xff0000)
+		embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
+		await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+		return
 			
 @client.command(pass_context=True)
 async def stop(ctx):
@@ -77,4 +81,4 @@ async def stop(ctx):
 		return
 		
 
-client.run("Your Token Here")
+client.run("Your token here")
