@@ -11,10 +11,11 @@ logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='Discord Bot log '+date+'.log', encoding='utf-8', mode='w', delay=None)
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-handler.setLevel(logging.INFO)
+handler.setLevel(logging.DEBUG)
 logger.addHandler(handler)
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.DEBUG)
+stream_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(stream_handler)
 
 
@@ -28,7 +29,7 @@ async def on_ready():
 	print("Bot en ligne et prêt!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
-	await client.change_presence(game=discord.Game(name="in v: 2.0.0"))
+	await client.change_presence(game=discord.Game(name="in v: 2.0.1"))
 	print("")
 
 @client.command(pass_context=True)
@@ -76,4 +77,4 @@ async def stop(ctx):
 		return
 		
 
-client.run("Your Token")
+client.run("Your Token Here")
