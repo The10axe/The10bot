@@ -6,7 +6,7 @@ import logging
 import asyncio
 import datetime
 
-date=datetime.datetime.now().strftime("%d-%m-%Y %Hh %Mm %Ss")
+date=datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm %Ss")
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='Discord Bot log '+date+'.log', encoding='utf-8', mode='w', delay=None)
