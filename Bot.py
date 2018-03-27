@@ -22,7 +22,7 @@ logger.addHandler(stream_handler)
 
 
 Client = discord.Client()
-bot_prefix= "§"
+bot_prefix= ">"
 client = commands.Bot(command_prefix=bot_prefix)
 client.remove_command("help")
 
@@ -31,7 +31,7 @@ async def on_ready():
 	print("Bot en ligne et prêt!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
-	await client.change_presence(game=discord.Game(name="in v: 2.1.1"))
+	await client.change_presence(game=discord.Game(name="in v: Alpha Test"))
 	print("")
 
 @client.command(pass_context=True)
@@ -43,20 +43,59 @@ async def ping(ctx):
 	print("")
 
 @client.command(pass_context=True)
-async def game(ctx,game : str, *, Message : str):
+async def game(ctx): #require arg
 	if ctx.message.author.id == "178566165206007808":
+		Message = ctx.message.content
+		Message = Message.split()
+		if len(Message) == 1:
+			embed = discord.Embed(title="Correct syntax:", description="§game Value Game_Name", color=0xff0000)
+			embed.add_field(name="Value", value="""
+play
+stream
+listen
+watch
+			""", inline=True)
+			embed.add_field(name="Game_Name", value="The game name", inline=True)
+			embed.set_author(name="Syntax error: "+str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+			await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+			return
+		if str.casefold(Message[1]) == "help":
+			embed = discord.Embed(title="Correct syntax:", description="§game Value Game_Name", color=0xff8000)
+			embed.add_field(name="Value", value="""
+play
+stream
+listen
+watch
+			""", inline=True)
+			embed.add_field(name="Game_Name", value="The game name", inline=True)
+			embed.set_author(name="Help for: "+str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+			await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+			return
+		index = 0
 		for value in range(0,4):
-			if str.casefold(game) == gamemode[value]:
+			index = index+1
+			if str.casefold(Message[1]) == gamemode[value]:
 				if value == 1:
-					await client.change_presence(game=discord.Game(name=Message,type=value,url="https://twitch.tv/the10axe"))
+					await client.change_presence(game=discord.Game(name="{}".format(" ".join(Message[2:])),type=value,url="https://twitch.tv/the10axe"))
 				else:
-					await client.change_presence(game=discord.Game(name=Message,type=value))
-				embed = discord.Embed(title="Game change successfully", description="New "+gamemode[value]+": "+Message, color=0x00ff00)
+					await client.change_presence(game=discord.Game(name="{}".format(" ".join(Message[2:])),type=value))
+				embed = discord.Embed(title="Game change successfully", description="New "+gamemode[value]+": "+"{}".format(" ".join(Message[2:])), color=0x00ff00)
 				embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
 				await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
-				print("Game setted to: ", Message)
+				print("Game setted to: ", "{}".format(" ".join(Message[2:])))
 				print("")
 				return
+		if index==4:
+			embed = discord.Embed(title="Correct syntax:", description="§game Value Game_Name", color=0xff0000)
+			embed.add_field(name="Value", value="""
+play
+stream
+listen
+watch
+			""", inline=True)
+			embed.add_field(name="Game_Name", value="The game name", inline=True)
+			embed.set_author(name="Syntax error: "+str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+			await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 	else:
 		print(ctx.message.author.id, "tried to set game")
 		embed = discord.Embed(title="An error occured", description="You have no right to do that!", color=0xff0000)
@@ -69,6 +108,7 @@ async def stop(ctx):
 	if ctx.message.author.id == "178566165206007808":
 		embed = discord.Embed(title="Good bye!", description="Stopping bot!", color=0x00ff00)
 		embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
+		await client.change_presence(game=discord.Game(name="its end!",type=3))
 		await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 		print("Stopping!")
 		logging.shutdown()
@@ -79,6 +119,13 @@ async def stop(ctx):
 		embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
 		await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 		return
+
+@client.command(pass_context=True)
+async def parrot(ctx):
+	embed = discord.Embed(title=None, description=ctx.message.content[8:], color=0x00ff00)
+	embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
+	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+	return
 		
 
 client.run(Token)
