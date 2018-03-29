@@ -110,9 +110,14 @@ async def stop(ctx):
 		embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
 		await client.change_presence(game=discord.Game(name="its end!",type=3))
 		await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
-		print("Stopping!")
-		logging.shutdown()
-		exit()
+		print("Waiting for log out!")
+		await client.logout()
+		while True:
+			if is_closed == True:
+				print("Shutting down...")
+				logging.shutdown()
+				exit()			
+
 	else:
 		print(ctx.message.author.id, "tried to set game")
 		embed = discord.Embed(title="An error occured", description="You have no right to do that!", color=0xff0000)
