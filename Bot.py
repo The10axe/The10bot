@@ -26,14 +26,31 @@ bot_prefix= ">"
 client = commands.Bot(command_prefix=bot_prefix)
 client.remove_command("help")
 
-@client.event
+@client.async_event
 async def on_ready():
 	print("Bot en ligne et prêt!")
 	print("Nom: ",client.user.name)
 	print("ID: ",client.user.id)
-	await client.change_presence(game=discord.Game(name="in v: Alpha Test"))
+	await client.change_presence(game=discord.Game(name="in v: Github Release"))
 	print("")
-
+	
+@client.command(pass_context=True)
+async def help(ctx):
+	if ctx.message.author.id != "178566165206007808":
+		embed = discord.Embed(title="Help", description="Use `>` to use commands: \n", color=0x00ff00)
+	if ctx.message.author.id == "178566165206007808":
+		embed = discord.Embed(title="Bot Admin Help", description="Use `>` to use commands: \n", color=0x00ff00)
+	# embed.add_field(name="\n", value="\n", inline=False)
+	embed.add_field(name="help", value="Let me help you, and teach you how to use me, you lewdy!", inline=False)
+	embed.add_field(name="ping", value="See by yourself how we play pong!", inline=False)
+	embed.add_field(name="parrot #MESSAGE", value="Let me be your parrot!", inline=False)
+	embed.add_field(name="me", value="Lets see some info about chu, I got 'em from some detective~", inline=False)
+	embed.add_field(name="info #?@SOMEONE", value="Get some info about me, or spy chur friends info!", inline=False)
+	if ctx.message.author.id == "178566165206007808":
+		embed.add_field(name="game #help|VALUE #?game", value="Change the game displayed", inline=False)
+		embed.add_field(name="stop", value="Will chu really kill me ;_;", inline=False)
+	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+	
 @client.command(pass_context=True)
 async def ping(ctx):
 	embed = discord.Embed(title="I saw chu!", description="Chu forgot to say \"Pong!\"", color=0x00ff00)
@@ -112,11 +129,9 @@ async def stop(ctx):
 		await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 		print("Waiting for log out!")
 		await client.logout()
-		while True:
-			if is_closed == True:
-				print("Shutting down...")
-				logging.shutdown()
-				exit()			
+		print("Shutting down...")
+		logging.shutdown()
+		exit()			
 
 	else:
 		print(ctx.message.author.id, "tried to set game")
@@ -131,6 +146,40 @@ async def parrot(ctx):
 	embed.set_author(name=ctx.message.author, icon_url=ctx.message.author.avatar_url)
 	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 	return
+
+@client.command(pass_context=True)
+async def me(ctx):
+	if ctx.message.server == None:
+		embed = discord.Embed(title="Info about you", description=None, color=0x000000)
+	else:
+		embed = discord.Embed(title="Info about you", description=None, color=ctx.message.author.color)
+	embed.add_field(name="User:", value=str(ctx.message.author)+" ("+str(ctx.message.author.id)+")", inline=False)
+	embed.add_field(name="Created the:", value=str(ctx.message.author.created_at)[0:-7], inline=False)
+	embed.set_image(url=ctx.message.author.avatar_url)
+	if ctx.message.server != None:
+		embed.add_field(name="Top role in this server:",value=str(ctx.message.author.top_role), inline=False)
+		embed.add_field(name="Display name:", value=str(ctx.message.author.display_name), inline=False)
+	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
+	
+@client.command(pass_context=True)
+async def info(ctx):
+	mentions = ctx.message.mentions
+	if len(mentions) == 1:
+		mentions = mentions[0]
+		if ctx.message.server != None:
+			embed = discord.Embed(title="Info about "+str(mentions), description=None, color=mentions.color)
+			embed.add_field(name="User:", value=str(mentions)+" ("+str(mentions.id)+")", inline=False)
+			embed.add_field(name="Created the:", value=str(mentions.created_at)[0:-7], inline=False)
+			embed.set_image(url=mentions.avatar_url)
+			embed.add_field(name="Top role in this server:",value=str(mentions.top_role), inline=False)
+			embed.add_field(name="Display name:", value=str(mentions.display_name), inline=False)
+	if len(mentions) == 0:
+		embed = discord.Embed(title="Info about myself (Click to add me)", description=None, color=0x000000, url="https://discordapp.com/oauth2/authorize?client_id=426478004298842113&permissions=2146958583&scope=bot")
+		embed.add_field(name="User:", value=str(client.user)+" ("+str(client.user.id)+")", inline=False)
+		embed.add_field(name="Created the:", value=str(client.user.created_at)[0:-7], inline=False)
+		embed.add_field(name="Looking at",value=str(len(client.servers))+" servers", inline=False)
+		embed.set_image(url=client.user.avatar_url)
+	await client.send_message(ctx.message.channel,content=None,tts=False,embed=embed)
 		
 
 client.run(Token)
