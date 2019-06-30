@@ -1,5 +1,5 @@
 # The10bot
-A discord bot in Python
+A discord bot in Python 3.6.8
 
 You need to edit the following file:
 - settings/token.id
@@ -9,8 +9,5 @@ You need the following library:
 - logging
 - asyncio
 - datetime
-- discord
+- discord.py (Works with 1.2.3)
 - random
-
-You also need the following program installed in PATH:
-- ffmpeg
